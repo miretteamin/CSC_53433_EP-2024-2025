@@ -1,6 +1,6 @@
 # INF633 - Advanced 3D Graphics (2022-2023) - Lab Course
 
-[Github Repository](https://github.com/edualvarado/inf633-2022-2023) | [Github Page](https://edualvarado.github.io/inf633-2022-2023/) | [Moodle](https://moodle.polytechnique.fr/course/view.php?id=14970)
+[Github Repository](https://github.com/Paul-Hubert/inf633-2023-2024) | [Github Page](https://edualvarado.github.io/inf633-2022-2023/) | [Moodle](https://moodle.polytechnique.fr/course/view.php?id=17662)
 
 ------
 
@@ -24,7 +24,7 @@
 <a name="Introduction"></a>
 ### Introduction
 
-Welcome to the repository for the lab sessions of INF633 for the course 2022-2023! 
+Welcome to the repository for the lab sessions of INF633 for the course 2023-2024! 
 
 Here, you will find a brief introduction to install and setup Unity, in addition to some quick tips and examples for those who didn't use this game-engine before. 
 
