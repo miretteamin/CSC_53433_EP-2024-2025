@@ -1,4 +1,4 @@
-# INF633 - Advanced 3D Graphics (2022-2023) - Lab Course
+# INF633 - Advanced 3D Graphics (2023-2024) - Lab Course
 
 [Github Repository](https://github.com/Paul-Hubert/inf633-2023-2024) | [Github Page](https://edualvarado.github.io/inf633-2022-2023/) | [Moodle](https://moodle.polytechnique.fr/course/view.php?id=17662)
 
