@@ -12,8 +12,10 @@ public class GeneticAlgo : MonoBehaviour
     public GameObject animalPrefab;
 
     [Header("Dynamic elements")]
-    public float vegetationGrowthRate = 1.0f;
+    public float vegetationGrowthRate = 0.01f;
     public float currentGrowth;
+
+    public float scale = 0.05f;
 
     private List<GameObject> animals;
     protected Terrain terrain;
@@ -48,7 +50,7 @@ public class GeneticAlgo : MonoBehaviour
         {
             animals.Add(makeAnimal());
         }
-        customTerrain.debug.text = "N° animals: " + animals.Count.ToString();
+        customTerrain.debug.text = "Nï¿½ animals: " + animals.Count.ToString();
 
         // Update grass elements/food resources.
         updateResources();
@@ -59,14 +61,31 @@ public class GeneticAlgo : MonoBehaviour
     /// </summary>
     public void updateResources()
     {
+        float threshold = 0.5f;
         Vector2 detail_sz = customTerrain.detailSize();
         int[,] details = customTerrain.getDetails();
         currentGrowth += vegetationGrowthRate;
+
         while (currentGrowth > 1.0f)
         {
-            int x = (int)(UnityEngine.Random.value * detail_sz.x);
-            int y = (int)(UnityEngine.Random.value * detail_sz.y);
-            details[y, x] = 1;
+            for (int x=0; x < detail_sz.x; x++)
+            {
+                for (int y=0; y < detail_sz.y; y++)
+                {
+                    float prob = Mathf.PerlinNoise((float)x  * scale, (float)y /  scale);
+                    if (prob > 0.8f)
+                    {
+                        prob = 0.8f;
+                    }
+                    if (UnityEngine.Random.value < prob)
+                    {
+                        details[y, x] = 1;
+                    }
+                }
+            }
+            // int x = (int)(UnityEngine.Random.value * detail_sz.x);
+            // int y = (int)(UnityEngine.Random.value * detail_sz.y);
+            // details[y, x] = 1;
             currentGrowth -= 1.0f;
         }
         customTerrain.saveDetails();

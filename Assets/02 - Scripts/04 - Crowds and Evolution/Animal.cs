@@ -20,6 +20,10 @@ public class Animal : MonoBehaviour
     public float gainEnergy = 10.0f;
     private float energy;
 
+    [Header("Grass Counter parameters")]
+    public int maxGrassCount = 10;
+    private int grassCount = 0;
+
     [Header("Sensor - Vision")]
     public float maxVision = 20.0f;
     public float stepAngle = 10.0f;
@@ -88,7 +92,15 @@ public class Animal : MonoBehaviour
             if (energy > maxEnergy)
                 energy = maxEnergy;
 
-            genetic_algo.addOffspring(this);
+            if (grassCount == maxGrassCount)
+            {
+                genetic_algo.addOffspring(this);
+                grassCount = 0;
+            }
+            else
+            {
+                grassCount += 1;
+            }
         }
 
         // If the energy is below 0, the animal dies.
