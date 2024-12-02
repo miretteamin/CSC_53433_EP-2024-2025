@@ -807,19 +807,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58addec6626ef40dfb932e8efbbb6236, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popSize: 20
+  popSize: 200
   animalPrefab: {fileID: 6733265589692463594, guid: b8a4860b06bc8b44fa2e523916edd3dd,
     type: 3}
   task: 1
   drawRays: 1
   clearTerrain: 1
   fillTerrain: 0
-  upateRandom: 0
-  showAnimals: 0
-  showGrassCount: 0
-  showFrame: 0
+  updateRandom: 0
+  makeClusters: 0
+  numClusters: 4
+  clusterRadius: 50
+  decayRatio: 0.9
+  coverageRate: 0.35
+  showAnimals: 1
+  showGrassCount: 1
+  showFrame: 1
   healthyColor: {r: 0.023529412, g: 0.32156864, b: 0.8666667, a: 0}
-  deathColor: {r: 0.2754717, g: 0.11610787, b: 0.082641475, a: 0}
+  deathColor: {r: 0.5698112, g: 0.15644023, b: 0.06343177, a: 0}
   eatingColor: {r: 0.6392157, g: 0.79607844, b: 0.21960784, a: 0}
   procreatingColor: {r: 0.99215686, g: 0.654902, b: 0.8745098, a: 0}
   showCorpses: 1
@@ -997,7 +1002,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 609556146}
-  m_LocalRotation: {x: 0.07881488, y: 0.48020634, z: -0.043376625, w: 0.87253}
+  m_LocalRotation: {x: 0.07881488, y: 0.48020637, z: -0.04337663, w: 0.87253}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1398,7 +1403,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1090240002}
-  m_LocalRotation: {x: 0.078814894, y: 0.48020637, z: -0.043376636, w: 0.87253}
+  m_LocalRotation: {x: 0.07881489, y: 0.4802064, z: -0.043376636, w: 0.87253}
   m_LocalPosition: {x: 5.7758684, y: 2.5, z: 7.3247967}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0

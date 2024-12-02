@@ -20,7 +20,20 @@ public class GeneticAlgo : MonoBehaviour
 
     public bool clearTerrain;
     public bool fillTerrain;
-    public bool upateRandom;
+    public bool updateRandom;
+
+    [Header("Grass Clusters")]
+    public bool makeClusters;
+    public int numClusters = 4;
+    [Range(0, 200)]
+    public float clusterRadius = 50f;
+
+    [Range(0, 1)]
+    public float decayRatio = 0.90f;
+    [Range(0, 1)]
+    public float coverageRate = 0.35f;
+    private float currentClusters;
+    private float _numClusters;
 
     [Header("Debug Text")]
     public bool showAnimals;
@@ -79,6 +92,8 @@ public class GeneticAlgo : MonoBehaviour
         showAnimals = true;
         showGrassCount = true;
         showFrame = true;
+        currentClusters = 0f;
+        _numClusters = (float)numClusters;
     }
 
     void Update()
@@ -93,6 +108,10 @@ public class GeneticAlgo : MonoBehaviour
         updateDebugText();
         // Update grass elements/food resources.
         updateResources();
+
+        // Decay num clusters over time
+        if (makeClusters)
+            _numClusters *= decayRatio;
     }
 
     private void updateDebugText()
@@ -128,9 +147,60 @@ public class GeneticAlgo : MonoBehaviour
             return;
 
         }
-        else if (upateRandom)
+        else if (makeClusters)
+        {
+            makeClustersFn();
+            makeClusters = false;
+            return;
+        }
+        else if (updateRandom)
         {
             updateResourcesRandom();
+        }
+    }
+    public void createCluster(int x, int y)
+    {
+        Vector2 detail_sz = customTerrain.detailSize();
+        int[,] details = customTerrain.getDetails();
+        int startX = (int)Math.Max(0, (float)x - 2 * clusterRadius);
+        int endX = (int)Math.Min(detail_sz.x, (float)x + 2 * clusterRadius);
+        int startY = (int)Math.Max(0, (float)y - 2 * clusterRadius);
+        int endY = (int)Math.Min(detail_sz.y, (float)y + 2 * clusterRadius);
+
+        for (int i = startX; i < endX; i++)
+        {
+            for (int j = startY; j < endY; j++)
+            {
+                if (Math.Sqrt((x - i) * (x - i) + (y - j) * (y - j)) <= clusterRadius)
+                {
+                    if (UnityEngine.Random.value < coverageRate)
+                    {
+                        if (details[j, i] != 1)
+                            grassCount++;
+                        details[j, i] = 1;
+                    }
+                }
+            }
+        }
+    }
+    public void makeClustersFn(int numClustersToCreate)
+    {
+        Vector2 detail_sz = customTerrain.detailSize();
+        int[,] details = customTerrain.getDetails();
+        for (int cluster = 0; cluster < numClustersToCreate; cluster++)
+        {
+            int x = (int)(UnityEngine.Random.value * detail_sz.x);
+            int y = (int)(UnityEngine.Random.value * detail_sz.y);
+
+            createCluster(x, y);
+        }
+        customTerrain.saveDetails();
+    }
+    public void makeClustersFn()
+    {
+        while (_numClusters > ((float)grassCount / 1257f))
+        {
+            makeClustersFn(1);
         }
     }
     public void clearTerrainFn()

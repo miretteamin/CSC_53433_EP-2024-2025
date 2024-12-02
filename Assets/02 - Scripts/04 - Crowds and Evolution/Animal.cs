@@ -246,7 +246,7 @@ public class Animal : MonoBehaviour
             else
             {
                 float health = energy / maxEnergy;
-                mat.color = energy * genetic_algo.getHealthyColor() + (1 - energy) * genetic_algo.getDeathColor();
+                mat.color = health * genetic_algo.getHealthyColor() + (1 - health) * genetic_algo.getDeathColor();
             }
         }
     }
