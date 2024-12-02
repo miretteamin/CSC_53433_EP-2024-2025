@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.IO;
 
 public class Animal : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class Animal : MonoBehaviour
     public float mutateStrength = 0.5f;
     public float maxAngle = 10.0f;
     public float animalScale;
+    private int lifetime;
 
     [Header("Energy parameters")]
     public float maxEnergy = 10.0f;
@@ -60,6 +62,8 @@ public class Animal : MonoBehaviour
 
     void Start()
     {
+        lifetime = 0;
+
         // Network: 1 input per receptor, 1 output per actuator.
         vision = new float[nEyes];
         networkStruct = new int[] { nEyes, 5, 1 };
@@ -81,6 +85,9 @@ public class Animal : MonoBehaviour
 
     void Update()
     {
+        lifetime++;
+        if (lifetime > genetic_algo.getMaxLifetime())
+            genetic_algo.setMaLifetime(lifetime);
         // In case something is not initialized...
         if (brain == null)
             brain = new SimpleNeuralNet(networkStruct);
@@ -196,7 +203,7 @@ public class Animal : MonoBehaviour
 
                 Debug.DrawRay(tfm.position,
                 forwardAnimal.normalized * maxVision * rayScale,
-                Color.green);
+                new Color(0f, 0.5f, 0f));
             }
 
             // Interate over vision length.

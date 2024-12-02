@@ -810,7 +810,7 @@ MonoBehaviour:
   popSize: 200
   animalPrefab: {fileID: 6733265589692463594, guid: b8a4860b06bc8b44fa2e523916edd3dd,
     type: 3}
-  task: 1
+  task: 2
   drawRays: 1
   clearTerrain: 1
   fillTerrain: 0
@@ -824,10 +824,10 @@ MonoBehaviour:
   showGrassCount: 1
   showFrame: 1
   showMaxGeneration: 1
-  healthyColor: {r: 0.023529412, g: 0.32156864, b: 0.8666667, a: 0}
-  deathColor: {r: 0.5698112, g: 0.15644023, b: 0.06343177, a: 0}
+  healthyColor: {r: 0.09803922, g: 0.62300277, b: 0.83137256, a: 0}
+  deathColor: {r: 0.3882353, g: 0.23529412, b: 0.27450982, a: 0}
   eatingColor: {r: 0.6392157, g: 0.79607844, b: 0.21960784, a: 0}
-  procreatingColor: {r: 0.99215686, g: 0.654902, b: 0.8745098, a: 0}
+  procreatingColor: {r: 0.87169814, g: 0.42745098, b: 0.8683514, a: 0}
   showCorpses: 1
   highlightEating: 1
   highlightProcreation: 1
@@ -2134,7 +2134,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2137751596}
-  m_LocalRotation: {x: 0.09467271, y: 0.4793379, z: -0.052104153, w: 0.870952}
+  m_LocalRotation: {x: 0.09467273, y: 0.4793379, z: -0.05210416, w: 0.870952}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0

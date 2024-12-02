@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.IO;
 
 public class GeneticAlgo : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class GeneticAlgo : MonoBehaviour
     public bool clearTerrain;
     public bool fillTerrain;
     public bool updateRandom;
+    public bool saveStatisticsToDisk = false;
 
     [Header("Grass Clusters")]
     public bool makeClusters;
@@ -39,9 +41,10 @@ public class GeneticAlgo : MonoBehaviour
     public bool showAnimals = true;
     public bool showGrassCount = true;
     public bool showFrame = true;
-
     public bool showMaxGeneration = true;
+    public bool showMaxLifetime = true;
     private int maxGeneration;
+    private int maxLifetime;
 
     [Header("Colors")]
     public Color healthyColor;
@@ -69,6 +72,14 @@ public class GeneticAlgo : MonoBehaviour
     protected float width;
     protected float height;
 
+    [Header("Statistics")]
+
+    private List<int> animalStats;
+    private List<int> grassStats;
+    private List<int> maxGenerationStats;
+    private List<int> maxLifetimeStats;
+    // private List<int> lifetimeStats;
+
     void Start()
     {
         // Retrieve terrain.
@@ -80,8 +91,12 @@ public class GeneticAlgo : MonoBehaviour
         // Initialize terrain growth.
         currentGrowth = 0.0f;
 
-        // Initialize animals array.
+        // Initialize arrays
         animals = new List<GameObject>();
+        animalStats = new List<int>();
+        grassStats = new List<int>();
+        maxGenerationStats = new List<int>();
+        maxLifetimeStats = new List<int>();
 
 
         // Clear Terrain
@@ -94,12 +109,14 @@ public class GeneticAlgo : MonoBehaviour
         currentClusters = 0f;
         _numClusters = (float)numClusters;
         maxGeneration = 0;
+        maxLifetime = 0;
+        saveStatisticsToDisk = false;
+
 
         if (task == 1)
         {
             // checkpoint
             makeClustersFn(numClusters);
-            clearTerrain = false;
             fillTerrain = false;
             updateRandom = false;
             showGrassCount = true;
@@ -137,11 +154,55 @@ public class GeneticAlgo : MonoBehaviour
         // Update grass elements/food resources.
         updateResources();
 
+        updateStats();
+
+        if (saveStatisticsToDisk)
+        {
+            saveToDisk();
+        }
+
         // Decay num clusters over time
         if (makeClusters)
             _numClusters *= decayRatio;
     }
+    private void updateStats()
+    {
 
+        animalStats.Add(animals.Count);
+        grassStats.Add(grassCount);
+        maxGenerationStats.Add(maxGeneration);
+        maxLifetimeStats.Add(maxLifetime);
+
+    }
+
+    private void saveToDisk()
+    {
+        string directoryPath = "./Statistics";
+        if (!Directory.Exists(directoryPath))
+        {
+            Directory.CreateDirectory(directoryPath);
+        }
+        string animalsFilePath = Path.Combine(directoryPath, "animals.csv");
+        string grassFilePath = Path.Combine(directoryPath, "grass.csv");
+        string maxGenerationFilePath = Path.Combine(directoryPath, "max_generation.csv");
+        string maxLifetimeFilePath = Path.Combine(directoryPath, "max_lifetime.csv");
+
+        SaveArrayToCSV(animalStats, animalsFilePath);
+        SaveArrayToCSV(grassStats, grassFilePath);
+        SaveArrayToCSV(maxGenerationStats, maxGenerationFilePath);
+        SaveArrayToCSV(maxLifetimeStats, maxLifetimeFilePath);
+
+        Debug.Log("Saved Statistics to Disk");
+        saveStatisticsToDisk = false;
+    }
+    void SaveArrayToCSV(List<int> array, string path)
+    {
+        using (StreamWriter writer = new StreamWriter(path))
+        {
+            // Write array as a single line of comma-separated values
+            writer.WriteLine(string.Join(",", array));
+        }
+    }
     private void updateDebugText()
     {
         customTerrain.debug.text = "";
@@ -151,6 +212,8 @@ public class GeneticAlgo : MonoBehaviour
             customTerrain.debug.text += "\nNum Grass: " + grassCount.ToString();
         if (showMaxGeneration)
             customTerrain.debug.text += "\nMax Generation: " + maxGeneration.ToString();
+        if (showMaxLifetime)
+            customTerrain.debug.text += "\nMax Lifetime: " + maxLifetime.ToString();
         if (showFrame)
             customTerrain.debug.text += "\nFrame: " + frame.ToString();
         while (customTerrain.debug.text.Length > 0 && customTerrain.debug.text[0] == '\n')
@@ -247,6 +310,7 @@ public class GeneticAlgo : MonoBehaviour
         }
         customTerrain.saveDetails();
         grassCount = 0;
+        clearTerrain = false;
     }
     public void fillTerrainFn()
     {
@@ -384,5 +448,13 @@ public class GeneticAlgo : MonoBehaviour
     public bool getHighlightProcreation()
     {
         return highlightProcreation;
+    }
+    public int getMaxLifetime()
+    {
+        return maxLifetime;
+    }
+    public void setMaLifetime(int maxLifetime)
+    {
+        this.maxLifetime = maxLifetime;
     }
 }
