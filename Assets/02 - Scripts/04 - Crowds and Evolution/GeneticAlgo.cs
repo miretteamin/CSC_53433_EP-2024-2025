@@ -11,11 +11,31 @@ public class GeneticAlgo : MonoBehaviour
     public int popSize = 100;
     public GameObject animalPrefab;
 
+    [Header("Actions")]
+    [Range(1, 5)]
+    public int task = 1;
+
+    public bool drawRays;
+
+    public bool clearTerrain;
+    public bool fillTerrain;
+    public bool upateRandom;
+
+    [Header("Debug Text")]
+    public bool showAnimals;
+    public bool showGrassCount;
+    public bool showFrame;
+
     [Header("Dynamic elements")]
     public float vegetationGrowthRate = 0.01f;
     public float currentGrowth;
 
     public float scale = 0.05f;
+
+    // Number of grass elements in the terrain
+    private int grassCount;
+
+    private int frame;
 
     private List<GameObject> animals;
     protected Terrain terrain;
@@ -41,25 +61,97 @@ public class GeneticAlgo : MonoBehaviour
             GameObject animal = makeAnimal();
             animals.Add(animal);
         }
+
+        // Clear Terrain
+        clearTerrainFn();
+
+        frame = 0;
+        showAnimals = true;
+        showGrassCount = true;
+        showFrame = true;
     }
 
     void Update()
     {
+        frame++;
         // Keeps animal to a minimum.
         while (animals.Count < popSize / 2)
         {
             animals.Add(makeAnimal());
         }
-        customTerrain.debug.text = "N� animals: " + animals.Count.ToString();
-
+        updateDebugText();
         // Update grass elements/food resources.
         updateResources();
+    }
+
+    private void updateDebugText()
+    {
+        customTerrain.debug.text = "";
+        if (showAnimals)
+            customTerrain.debug.text += "\nNum Animals: " + animals.Count.ToString();
+        if (showGrassCount)
+            customTerrain.debug.text += "\nNum Grass: " + grassCount.ToString();
+        if (showFrame)
+            customTerrain.debug.text += "\nFrame: " + frame.ToString();
+
+        while (customTerrain.debug.text.Length > 0 && customTerrain.debug.text[0] == '\n')
+            customTerrain.debug.text = customTerrain.debug.text.Substring(1);
+
     }
 
     /// <summary>
     /// Method to place grass or other resource in the terrain.
     /// </summary>
     public void updateResources()
+    {
+        if (clearTerrain)
+        {
+            clearTerrainFn();
+            clearTerrain = false;
+            return;
+        }
+        else if (fillTerrain)
+        {
+            fillTerrainFn();
+            fillTerrain = false;
+            return;
+
+        }
+        else if (upateRandom)
+        {
+            updateResourcesRandom();
+        }
+    }
+    public void clearTerrainFn()
+    {
+        Vector2 detail_sz = customTerrain.detailSize();
+        int[,] details = customTerrain.getDetails();
+        for (int i = 0; i < detail_sz.x; i++)
+        {
+            for (int j = 0; j < detail_sz.y; j++)
+            {
+                details[j, i] = 0;
+            }
+        }
+        customTerrain.saveDetails();
+        grassCount = 0;
+    }
+    public void fillTerrainFn()
+    {
+        Vector2 detail_sz = customTerrain.detailSize();
+        int[,] details = customTerrain.getDetails();
+        for (int i = 0; i < detail_sz.x; i++)
+        {
+            for (int j = 0; j < detail_sz.y; j++)
+            {
+                if (details[j, i] != 1)
+                    grassCount++;
+                details[j, i] = 1;
+            }
+        }
+        customTerrain.saveDetails();
+    }
+    public void updateResourcesRandom()
     {
         float threshold = 0.5f;
         Vector2 detail_sz = customTerrain.detailSize();
@@ -68,17 +160,19 @@ public class GeneticAlgo : MonoBehaviour
 
         while (currentGrowth > 1.0f)
         {
-            for (int x=0; x < detail_sz.x; x++)
+            for (int x = 0; x < detail_sz.x; x++)
             {
-                for (int y=0; y < detail_sz.y; y++)
+                for (int y = 0; y < detail_sz.y; y++)
                 {
-                    float prob = Mathf.PerlinNoise((float)x  * scale, (float)y /  scale);
+                    float prob = Mathf.PerlinNoise((float)x * scale, (float)y / scale);
                     if (prob > 0.8f)
                     {
                         prob = 0.8f;
                     }
                     if (UnityEngine.Random.value < prob)
                     {
+                        if (details[y, x] != 1)
+                            grassCount++;
                         details[y, x] = 1;
                     }
                 }
@@ -137,6 +231,16 @@ public class GeneticAlgo : MonoBehaviour
     {
         animals.Remove(animal.transform.gameObject);
         Destroy(animal.transform.gameObject);
+    }
+
+    public bool getDrawRays()
+    {
+        return drawRays;
+    }
+
+    public void decrementGrass()
+    {
+        grassCount--;
     }
 
 }

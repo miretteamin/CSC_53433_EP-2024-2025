@@ -13,6 +13,7 @@ public class Animal : MonoBehaviour
     public float swapStrength = 10.0f;
     public float mutateStrength = 0.5f;
     public float maxAngle = 10.0f;
+    public float animalScale;
 
     [Header("Energy parameters")]
     public float maxEnergy = 10.0f;
@@ -28,6 +29,10 @@ public class Animal : MonoBehaviour
     public float maxVision = 20.0f;
     public float stepAngle = 10.0f;
     public int nEyes = 5;
+
+    [Header("Rays")]
+    public float rayScale;
+    // public Color visionRayColor;
 
     private int[] networkStruct;
     private SimpleNeuralNet brain = null;
@@ -55,12 +60,14 @@ public class Animal : MonoBehaviour
         networkStruct = new int[] { nEyes, 5, 1 };
         energy = maxEnergy;
         tfm = transform;
+        tfm.localScale = new Vector3(animalScale, animalScale, animalScale);
 
         // Renderer used to update animal color.
         // It needs to be updated for more complex models.
         MeshRenderer renderer = GetComponentInChildren<MeshRenderer>();
         if (renderer != null)
             mat = renderer.material;
+
     }
 
     void Update()
@@ -88,6 +95,7 @@ public class Animal : MonoBehaviour
         {
             // Eat (remove) the grass and gain energy.
             details[dy, dx] = 0;
+            genetic_algo.decrementGrass();
             energy += gainEnergy;
             if (energy > maxEnergy)
                 energy = maxEnergy;
@@ -140,6 +148,17 @@ public class Animal : MonoBehaviour
             float sx = tfm.position.x * ratio.x;
             float sy = tfm.position.z * ratio.y;
             vision[i] = 1.0f;
+            if (genetic_algo.getDrawRays())
+            {
+                // Debug.DrawRay(tfm.position,
+                // tfm.position + (forwardAnimal.normalized * maxVision * rayScale),
+                // visionRayColor);
+                Debug.DrawRay(tfm.position,
+                tfm.position + (forwardAnimal.normalized * maxVision * rayScale),
+                Color.red);
+                // Debug.Log("Red: " + Color.red.ToString());
+                // Debug.Log("Vision Color: " + visionRayColor.ToString());
+            }
 
             // Interate over vision length.
             for (float distance = 1.0f; distance < maxVision; distance += 0.5f)
