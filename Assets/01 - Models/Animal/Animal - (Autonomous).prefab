@@ -52,14 +52,14 @@ MonoBehaviour:
   mutateStrength: 0.5
   maxAngle: 10
   animalScale: 8
-  maxEnergy: 10
-  lossEnergy: 0
+  maxEnergy: 50
+  lossEnergy: 0.1
   gainEnergy: 10
   maxGrassCount: 10
   maxVision: 20
-  stepAngle: 30
-  nEyes: 1
-  rayScale: 0.5
+  stepAngle: 10
+  nEyes: 8
+  rayScale: 1
 --- !u!114 &6733265589692463593
 MonoBehaviour:
   m_ObjectHideFlags: 0

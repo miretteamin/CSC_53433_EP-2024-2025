@@ -807,7 +807,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58addec6626ef40dfb932e8efbbb6236, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popSize: 1
+  popSize: 20
   animalPrefab: {fileID: 6733265589692463594, guid: b8a4860b06bc8b44fa2e523916edd3dd,
     type: 3}
   task: 1
@@ -818,6 +818,13 @@ MonoBehaviour:
   showAnimals: 0
   showGrassCount: 0
   showFrame: 0
+  healthyColor: {r: 0.023529412, g: 0.32156864, b: 0.8666667, a: 0}
+  deathColor: {r: 0.2754717, g: 0.11610787, b: 0.082641475, a: 0}
+  eatingColor: {r: 0.6392157, g: 0.79607844, b: 0.21960784, a: 0}
+  procreatingColor: {r: 0.99215686, g: 0.654902, b: 0.8745098, a: 0}
+  showCorpses: 1
+  highlightEating: 1
+  highlightProcreation: 1
   vegetationGrowthRate: 0.01
   currentGrowth: 0
   scale: 0.05

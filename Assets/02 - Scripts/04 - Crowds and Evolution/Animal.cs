@@ -20,6 +20,10 @@ public class Animal : MonoBehaviour
     public float lossEnergy = 0.1f;
     public float gainEnergy = 10.0f;
     private float energy;
+    private bool death;
+    private int corpseCounter;
+    private int eatingFrameCounter;
+    private int procreationFrameCounter;
 
     [Header("Grass Counter parameters")]
     public int maxGrassCount = 10;
@@ -68,6 +72,10 @@ public class Animal : MonoBehaviour
         if (renderer != null)
             mat = renderer.material;
 
+        death = false;
+        corpseCounter = -1;
+        eatingFrameCounter = -1;
+
     }
 
     void Update()
@@ -83,6 +91,18 @@ public class Animal : MonoBehaviour
             return;
         }
 
+        // If the Animal is dead
+        if (death)
+        {
+            corpseCounter--;
+            if (corpseCounter < 0)
+            {
+                // Remove corpse
+                genetic_algo.removeAnimal(this);
+            }
+            return;
+        }
+
         // Retrieve animal location in the heighmap
         int dx = (int)((tfm.position.x / terrainSize.x) * detailSize.x);
         int dy = (int)((tfm.position.z / terrainSize.y) * detailSize.y);
@@ -95,7 +115,13 @@ public class Animal : MonoBehaviour
         {
             // Eat (remove) the grass and gain energy.
             details[dy, dx] = 0;
+            // Decrement count of grass
             genetic_algo.decrementGrass();
+            if (genetic_algo.getHighlightEating())
+            {
+                eatingFrameCounter = 50;
+            }
+            // Add energy gain
             energy += gainEnergy;
             if (energy > maxEnergy)
                 energy = maxEnergy;
@@ -104,6 +130,10 @@ public class Animal : MonoBehaviour
             {
                 genetic_algo.addOffspring(this);
                 grassCount = 0;
+                if (genetic_algo.getHighlightProcreation())
+                {
+                    procreationFrameCounter = 50;
+                }
             }
             else
             {
@@ -115,12 +145,24 @@ public class Animal : MonoBehaviour
         if (energy < 0)
         {
             energy = 0.0f;
-            genetic_algo.removeAnimal(this);
+            death = true;
+            if (genetic_algo.getShowCorpses())
+            {
+                // Number of frames the corpse will stay on screen
+                corpseCounter = 50;
+
+                // Immobilize Animal
+                CapsuleAutoController cac = GetComponent<CapsuleAutoController>();
+                cac.setMaxSpeed(0f);
+            }
+            else
+            {
+                genetic_algo.removeAnimal(this);
+            }
         }
 
         // Update the color of the animal as a function of the energy that it contains.
-        if (mat != null)
-            mat.color = Color.white * (energy / maxEnergy);
+        UpdateColor();
 
         // 1. Update receptor.
         UpdateVision();
@@ -130,7 +172,7 @@ public class Animal : MonoBehaviour
 
         // 3. Act using actuators.
         float angle = (output[0] * 2.0f - 1.0f) * maxAngle;
-        tfm.Rotate(0.0f, angle, 0.0f);
+        tfm.Rotate(0.0f, 0f, 0.0f);
     }
 
     /// <summary>
@@ -150,14 +192,10 @@ public class Animal : MonoBehaviour
             vision[i] = 1.0f;
             if (genetic_algo.getDrawRays())
             {
-                // Debug.DrawRay(tfm.position,
-                // tfm.position + (forwardAnimal.normalized * maxVision * rayScale),
-                // visionRayColor);
+
                 Debug.DrawRay(tfm.position,
-                tfm.position + (forwardAnimal.normalized * maxVision * rayScale),
-                Color.red);
-                // Debug.Log("Red: " + Color.red.ToString());
-                // Debug.Log("Vision Color: " + visionRayColor.ToString());
+                forwardAnimal.normalized * maxVision * rayScale,
+                Color.green);
             }
 
             // Interate over vision length.
@@ -185,6 +223,33 @@ public class Animal : MonoBehaviour
         }
     }
 
+    private void UpdateColor()
+    {
+        if (mat != null)
+        {
+            mat.SetFloat("_Metallic", 1.0f);
+            if (death)
+            {
+                mat.color = genetic_algo.getDeathColor();
+            }
+            else if (procreationFrameCounter > 0)
+            {
+                mat.color = genetic_algo.getProcreatingColor();
+                procreationFrameCounter--;
+            }
+            else if (eatingFrameCounter > 0)
+            {
+                mat.color = genetic_algo.getEatingColor();
+                eatingFrameCounter--;
+            }
+
+            else
+            {
+                float health = energy / maxEnergy;
+                mat.color = energy * genetic_algo.getHealthyColor() + (1 - energy) * genetic_algo.getDeathColor();
+            }
+        }
+    }
     public void Setup(CustomTerrain ct, GeneticAlgo ga)
     {
         terrain = ct;

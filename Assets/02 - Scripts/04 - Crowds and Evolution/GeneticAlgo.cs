@@ -8,6 +8,7 @@ public class GeneticAlgo : MonoBehaviour
 {
 
     [Header("Genetic Algorithm parameters")]
+    [Range(0, 1000)]
     public int popSize = 100;
     public GameObject animalPrefab;
 
@@ -25,6 +26,15 @@ public class GeneticAlgo : MonoBehaviour
     public bool showAnimals;
     public bool showGrassCount;
     public bool showFrame;
+
+    [Header("Colors")]
+    public Color healthyColor;
+    public Color deathColor;
+    public Color eatingColor;
+    public Color procreatingColor;
+    public bool showCorpses = true;
+    public bool highlightEating = true;
+    public bool highlightProcreation = true;
 
     [Header("Dynamic elements")]
     public float vegetationGrowthRate = 0.01f;
@@ -73,12 +83,13 @@ public class GeneticAlgo : MonoBehaviour
 
     void Update()
     {
+        // Increment frame
         frame++;
         // Keeps animal to a minimum.
-        while (animals.Count < popSize / 2)
-        {
-            animals.Add(makeAnimal());
-        }
+        // while (animals.Count < popSize / 2)
+        // {
+        //     animals.Add(makeAnimal());
+        // }
         updateDebugText();
         // Update grass elements/food resources.
         updateResources();
@@ -242,5 +253,33 @@ public class GeneticAlgo : MonoBehaviour
     {
         grassCount--;
     }
+    public Color getHealthyColor()
+    {
+        return healthyColor;
+    }
 
+    public Color getDeathColor()
+    {
+        return deathColor;
+    }
+    public Color getEatingColor()
+    {
+        return eatingColor;
+    }
+    public Color getProcreatingColor()
+    {
+        return procreatingColor;
+    }
+    public bool getShowCorpses()
+    {
+        return showCorpses;
+    }
+    public bool getHighlightEating()
+    {
+        return highlightEating;
+    }
+    public bool getHighlightProcreation()
+    {
+        return highlightProcreation;
+    }
 }
