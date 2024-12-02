@@ -36,9 +36,12 @@ public class GeneticAlgo : MonoBehaviour
     private float _numClusters;
 
     [Header("Debug Text")]
-    public bool showAnimals;
-    public bool showGrassCount;
-    public bool showFrame;
+    public bool showAnimals = true;
+    public bool showGrassCount = true;
+    public bool showFrame = true;
+
+    public bool showMaxGeneration = true;
+    private int maxGeneration;
 
     [Header("Colors")]
     public Color healthyColor;
@@ -79,11 +82,7 @@ public class GeneticAlgo : MonoBehaviour
 
         // Initialize animals array.
         animals = new List<GameObject>();
-        for (int i = 0; i < popSize; i++)
-        {
-            GameObject animal = makeAnimal();
-            animals.Add(animal);
-        }
+
 
         // Clear Terrain
         clearTerrainFn();
@@ -94,10 +93,39 @@ public class GeneticAlgo : MonoBehaviour
         showFrame = true;
         currentClusters = 0f;
         _numClusters = (float)numClusters;
+        maxGeneration = 0;
+
+        if (task == 1)
+        {
+            // checkpoint
+            makeClustersFn(numClusters);
+            clearTerrain = false;
+            fillTerrain = false;
+            updateRandom = false;
+            showGrassCount = true;
+            showAnimals = false;
+            showMaxGeneration = false;
+            showFrame = true;
+        }
+        else if (task == 2)
+        {
+            makeClustersFn(numClusters);
+            for (int i = 0; i < popSize; i++)
+            {
+                GameObject animal = makeAnimal(1);
+                animals.Add(animal);
+            }
+            drawRays = true;
+            showGrassCount = true;
+            showAnimals = true;
+            showMaxGeneration = true;
+            showFrame = true;
+        }
     }
 
     void Update()
     {
+
         // Increment frame
         frame++;
         // Keeps animal to a minimum.
@@ -121,9 +149,10 @@ public class GeneticAlgo : MonoBehaviour
             customTerrain.debug.text += "\nNum Animals: " + animals.Count.ToString();
         if (showGrassCount)
             customTerrain.debug.text += "\nNum Grass: " + grassCount.ToString();
+        if (showMaxGeneration)
+            customTerrain.debug.text += "\nMax Generation: " + maxGeneration.ToString();
         if (showFrame)
             customTerrain.debug.text += "\nFrame: " + frame.ToString();
-
         while (customTerrain.debug.text.Length > 0 && customTerrain.debug.text[0] == '\n')
             customTerrain.debug.text = customTerrain.debug.text.Substring(1);
 
@@ -176,7 +205,9 @@ public class GeneticAlgo : MonoBehaviour
                     if (UnityEngine.Random.value < coverageRate)
                     {
                         if (details[j, i] != 1)
+                        {
                             grassCount++;
+                        }
                         details[j, i] = 1;
                     }
                 }
@@ -271,10 +302,10 @@ public class GeneticAlgo : MonoBehaviour
     /// </summary>
     /// <param name="position"></param>
     /// <returns></returns>
-    public GameObject makeAnimal(Vector3 position)
+    public GameObject makeAnimal(Vector3 position, int generation)
     {
         GameObject animal = Instantiate(animalPrefab, transform);
-        animal.GetComponent<Animal>().Setup(customTerrain, this);
+        animal.GetComponent<Animal>().Setup(customTerrain, this, generation);
         animal.transform.position = position;
         animal.transform.Rotate(0.0f, UnityEngine.Random.value * 360.0f, 0.0f);
         return animal;
@@ -284,22 +315,24 @@ public class GeneticAlgo : MonoBehaviour
     /// If makeAnimal() is called without position, we randomize it on the terrain.
     /// </summary>
     /// <returns></returns>
-    public GameObject makeAnimal()
+    public GameObject makeAnimal(int generation)
     {
         Vector3 scale = terrain.terrainData.heightmapScale;
         float x = UnityEngine.Random.value * width;
         float z = UnityEngine.Random.value * height;
         float y = customTerrain.getInterp(x / scale.x, z / scale.z);
-        return makeAnimal(new Vector3(x, y, z));
+        return makeAnimal(new Vector3(x, y, z), generation);
     }
 
     /// <summary>
     /// Method to add an animal inherited from anothed. It spawns where the parent was.
     /// </summary>
     /// <param name="parent"></param>
-    public void addOffspring(Animal parent)
+    public void addOffspring(Animal parent, int generation)
     {
-        GameObject animal = makeAnimal(parent.transform.position);
+        if (generation > maxGeneration)
+            maxGeneration = generation;
+        GameObject animal = makeAnimal(parent.transform.position, generation);
         animal.GetComponent<Animal>().InheritBrain(parent.GetBrain(), true);
         animals.Add(animal);
     }

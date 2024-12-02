@@ -19,7 +19,8 @@ public class Animal : MonoBehaviour
     public float maxEnergy = 10.0f;
     public float lossEnergy = 0.1f;
     public float gainEnergy = 10.0f;
-    private float energy;
+    public float energy;
+    private int generation;
     private bool death;
     private int corpseCounter;
     private int eatingFrameCounter;
@@ -128,7 +129,7 @@ public class Animal : MonoBehaviour
 
             if (grassCount == maxGrassCount)
             {
-                genetic_algo.addOffspring(this);
+                genetic_algo.addOffspring(this, generation + 1);
                 grassCount = 0;
                 if (genetic_algo.getHighlightProcreation())
                 {
@@ -250,10 +251,11 @@ public class Animal : MonoBehaviour
             }
         }
     }
-    public void Setup(CustomTerrain ct, GeneticAlgo ga)
+    public void Setup(CustomTerrain ct, GeneticAlgo ga, int generation)
     {
         terrain = ct;
         genetic_algo = ga;
+        this.generation = generation;
         UpdateSetup();
     }
 

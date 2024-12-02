@@ -823,6 +823,7 @@ MonoBehaviour:
   showAnimals: 1
   showGrassCount: 1
   showFrame: 1
+  showMaxGeneration: 1
   healthyColor: {r: 0.023529412, g: 0.32156864, b: 0.8666667, a: 0}
   deathColor: {r: 0.5698112, g: 0.15644023, b: 0.06343177, a: 0}
   eatingColor: {r: 0.6392157, g: 0.79607844, b: 0.21960784, a: 0}
@@ -1002,7 +1003,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 609556146}
-  m_LocalRotation: {x: 0.07881488, y: 0.48020637, z: -0.04337663, w: 0.87253}
+  m_LocalRotation: {x: 0.07881488, y: 0.48020634, z: -0.043376625, w: 0.87253}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1403,7 +1404,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1090240002}
-  m_LocalRotation: {x: 0.07881489, y: 0.4802064, z: -0.043376636, w: 0.87253}
+  m_LocalRotation: {x: 0.078814894, y: 0.48020637, z: -0.043376636, w: 0.87253}
   m_LocalPosition: {x: 5.7758684, y: 2.5, z: 7.3247967}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2133,7 +2134,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2137751596}
-  m_LocalRotation: {x: 0.09467273, y: 0.4793379, z: -0.05210416, w: 0.870952}
+  m_LocalRotation: {x: 0.09467271, y: 0.4793379, z: -0.052104153, w: 0.870952}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
