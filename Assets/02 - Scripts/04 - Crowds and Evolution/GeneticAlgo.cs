@@ -78,6 +78,8 @@ public class GeneticAlgo : MonoBehaviour
     private List<int> grassStats;
     private List<int> maxGenerationStats;
     private List<int> maxLifetimeStats;
+
+    private List<float> tst;
     // private List<int> lifetimeStats;
 
     void Start()
@@ -97,6 +99,7 @@ public class GeneticAlgo : MonoBehaviour
         grassStats = new List<int>();
         maxGenerationStats = new List<int>();
         maxLifetimeStats = new List<int>();
+        tst = new List<float>();
 
 
         // Clear Terrain
@@ -172,6 +175,7 @@ public class GeneticAlgo : MonoBehaviour
         grassStats.Add(grassCount);
         maxGenerationStats.Add(maxGeneration);
         maxLifetimeStats.Add(maxLifetime);
+        tst.Add(_numClusters);
 
     }
 
@@ -186,16 +190,26 @@ public class GeneticAlgo : MonoBehaviour
         string grassFilePath = Path.Combine(directoryPath, "grass.csv");
         string maxGenerationFilePath = Path.Combine(directoryPath, "max_generation.csv");
         string maxLifetimeFilePath = Path.Combine(directoryPath, "max_lifetime.csv");
+        string tstFilePath = Path.Combine(directoryPath, "tst.csv");
 
         SaveArrayToCSV(animalStats, animalsFilePath);
         SaveArrayToCSV(grassStats, grassFilePath);
         SaveArrayToCSV(maxGenerationStats, maxGenerationFilePath);
         SaveArrayToCSV(maxLifetimeStats, maxLifetimeFilePath);
+        SaveArrayToCSV(tst, tstFilePath);
 
         Debug.Log("Saved Statistics to Disk");
         saveStatisticsToDisk = false;
     }
     void SaveArrayToCSV(List<int> array, string path)
+    {
+        using (StreamWriter writer = new StreamWriter(path))
+        {
+            // Write array as a single line of comma-separated values
+            writer.WriteLine(string.Join(",", array));
+        }
+    }
+    void SaveArrayToCSV(List<float> array, string path)
     {
         using (StreamWriter writer = new StreamWriter(path))
         {
@@ -242,7 +256,6 @@ public class GeneticAlgo : MonoBehaviour
         else if (makeClusters)
         {
             makeClustersFn();
-            makeClusters = false;
             return;
         }
         else if (updateRandom)
@@ -279,6 +292,8 @@ public class GeneticAlgo : MonoBehaviour
     }
     public void makeClustersFn(int numClustersToCreate)
     {
+        Debug.Log("A7A");
+
         Vector2 detail_sz = customTerrain.detailSize();
         int[,] details = customTerrain.getDetails();
         for (int cluster = 0; cluster < numClustersToCreate; cluster++)
@@ -292,10 +307,14 @@ public class GeneticAlgo : MonoBehaviour
     }
     public void makeClustersFn()
     {
+        // Debug.Log("Adding clusters\nOld: " + grassCount.ToString());
+        Debug.Log("Num clusters: " + _numClusters.ToString());
+        Debug.Log("CurrGrass: " + ((float)grassCount / 1257f).ToString());
         while (_numClusters > ((float)grassCount / 1257f))
         {
             makeClustersFn(1);
         }
+        // Debug.Log("New: " + grassCount.ToString());
     }
     public void clearTerrainFn()
     {
