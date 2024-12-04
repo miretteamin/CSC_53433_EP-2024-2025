@@ -37,23 +37,23 @@ public class FootStepper : MonoBehaviour
         // If we are already moving, don't start another move.
         if (Moving)
         {
-            Debug.Log("Moving");
             return;
         }
 
         /*
          * First, we want to calculate the distance from the GameObject where this script is attached (target, red sphere) to the home position of the respective leg (blue chip).
          * We also calculate the quaternion between the current rotation and the home rotation.
-         * If such distance is larger than the threshold step, OR the angle difference is larger than the angle threshold, we call the coroutine to move the leg.
+         * If such distance is larger than the threshold step, OR the angle difference is larger 
+         than the angle threshold, we call the coroutine to move the leg.
          */
 
         // START TODO ###################
 
         float distFromHome = (this.transform.position - this.homeTransform.position).magnitude;
-        // float angleFromHome = ...
+        float angleFromHome = Quaternion.Angle(this.transform.rotation, this.homeTransform.rotation);
 
         // Change condition!
-        if (false)
+        if (distFromHome > distanceThreshold || angleFromHome > angleThreshold)
         {
             // END TODO ###################
 
@@ -96,7 +96,8 @@ public class FootStepper : MonoBehaviour
         /*
          * Now, we build a raycast system. Check: https://docs.unity3d.com/ScriptReference/Physics.Raycast.html
          * The ray will detect a collision with the terrain and use such information to place the foot accordingly on the ground.
-         * First, you create the origin (Vector3) of your ray, which will be in the home position (remember to add the overshoot vector calculated before).
+         * First, you create the origin (Vector3) of your ray, which will be in the home position 
+         * (remember to add the overshoot vector calculated before).
          * You can also add some vertical y displacement to let the ray having more space when going down and avoiding undesired collisions.
          * Then, throw the ray downwards, and save the position and normal vector of the hit in "endPos" and "endNormal" respectively.
          * If there is a collision, return true. Otherwise, you can return false.
@@ -104,13 +105,15 @@ public class FootStepper : MonoBehaviour
 
         // START TODO ###################
 
-        // Vector3 raycastOrigin = ...
+        float epislon = 1e-2f;
+        Vector3 raycastOrigin = this.homeTransform.position + overshootVector + new Vector3(0f, epislon, 0f);
 
-        // if (Physics.Raycast(...))
-        // {
-        //  ...
-        //  return true;
-        // }
+        if (Physics.Raycast(raycastOrigin, Vector3.down, out RaycastHit hitInfo))
+        {
+            endPos = hitInfo.point;
+            endNormal = hitInfo.normal;
+            return true;
+        }
 
         // END TODO ###################
 
@@ -164,7 +167,7 @@ public class FootStepper : MonoBehaviour
 
             // START TODO ###################
 
-            // transform.position = ...
+            transform.position = moveTime * startPos + (1 - moveTime) * endPos;
 
             // END TODO ###################
 
