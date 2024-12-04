@@ -42,7 +42,7 @@ public class QuadrupedProceduralMotion : MonoBehaviour
 
     // Settings relative to the head.
     [Header("Head Settings")]
-    public Transform headBone; 
+    public Transform headBone;
     public float speedHead = 1f;
     public bool headDebug = false;
     public Vector3 goalWorldLookDir;
@@ -66,7 +66,7 @@ public class QuadrupedProceduralMotion : MonoBehaviour
 
     // Update is called every frame, if the MonoBehaviour is enabled.
     private void Update()
-    {        
+    {
         RootMotion();
     }
 
@@ -154,7 +154,8 @@ public class QuadrupedProceduralMotion : MonoBehaviour
         // The ray information gives you where you hit and the normal of the terrain in that location.
         if (Physics.Raycast(raycastOrigin, -transform.up, out RaycastHit hit, Mathf.Infinity))
         {
-            if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Ground"))
+            // if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Ground"))
+            if (hit.transform.gameObject.tag == "Ground")
             {
                 posHit = hit.point;
                 distanceHit = hit.distance;

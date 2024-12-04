@@ -37,6 +37,7 @@ public class FootStepper : MonoBehaviour
         // If we are already moving, don't start another move.
         if (Moving)
         {
+            Debug.Log("Moving");
             return;
         }
 
@@ -48,7 +49,7 @@ public class FootStepper : MonoBehaviour
 
         // START TODO ###################
 
-        // float distFromHome = ...
+        float distFromHome = (this.transform.position - this.homeTransform.position).magnitude;
         // float angleFromHome = ...
 
         // Change condition!
