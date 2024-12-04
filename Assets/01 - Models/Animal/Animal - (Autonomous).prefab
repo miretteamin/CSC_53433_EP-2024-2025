@@ -55,8 +55,9 @@ MonoBehaviour:
   maxEnergy: 50
   lossEnergy: 0.1
   gainEnergy: 10
+  energy: 0
   maxGrassCount: 10
-  maxVision: 20
+  maxVision: 100
   stepAngle: 10
   nEyes: 8
   rayScale: 1

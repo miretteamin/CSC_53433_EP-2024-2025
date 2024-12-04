@@ -60,7 +60,7 @@ public class FabricIKQuadruped : MonoBehaviour
          * b3   c2   b2    c1   b1    c0   b0
          * O ======== O ======== O ======== O
          */
-
+        Debug.Log("A7A");
         bones = new Transform[chainLength + 1];
         bonesPositions = new Vector3[chainLength + 1];
         bonesLength = new float[chainLength];
@@ -131,7 +131,7 @@ public class FabricIKQuadruped : MonoBehaviour
     /// Fast IK with Forward/Backward pass.
     /// </summary>
     private void FastIK()
-    {        
+    {
         // If no target is found.
         if (target == null)
         {

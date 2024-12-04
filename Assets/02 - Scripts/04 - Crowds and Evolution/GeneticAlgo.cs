@@ -135,6 +135,7 @@ public class GeneticAlgo : MonoBehaviour
                 GameObject animal = makeAnimal(1);
                 animals.Add(animal);
             }
+            makeClusters = true;
             drawRays = true;
             showGrassCount = true;
             showAnimals = true;
@@ -292,8 +293,6 @@ public class GeneticAlgo : MonoBehaviour
     }
     public void makeClustersFn(int numClustersToCreate)
     {
-        Debug.Log("A7A");
-
         Vector2 detail_sz = customTerrain.detailSize();
         int[,] details = customTerrain.getDetails();
         for (int cluster = 0; cluster < numClustersToCreate; cluster++)
@@ -307,7 +306,6 @@ public class GeneticAlgo : MonoBehaviour
     }
     public void makeClustersFn()
     {
-        // Debug.Log("Adding clusters\nOld: " + grassCount.ToString());
         Debug.Log("Num clusters: " + _numClusters.ToString());
         Debug.Log("CurrGrass: " + ((float)grassCount / 1257f).ToString());
         while (_numClusters > ((float)grassCount / 1257f))

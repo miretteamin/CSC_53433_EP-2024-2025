@@ -71,16 +71,15 @@ public class FabricIK : MonoBehaviour
             // START TODO ###################
 
             // Just a placeholder. Change with the correct transform!
-            bones[i] = transform.parent;
+            // bones[i] = transform.parent;
 
-            // bones[i] = ...
-            // startingBoneRotation[i] = ...
-
+            bones[i] = current;
+            startingBoneRotation[i] = current.rotation;
             // END TODO ###################
 
             /*
              * Fill bonesLength[i] with the length between each bone.
-             * We need to differenciate between two cases:
+             * We need to differentiate between two cases:
              * 
              * Leaf bones (last bone in the chain):They do not have any length. We are only saving here its direction towards the target.
              * 
@@ -90,14 +89,15 @@ public class FabricIK : MonoBehaviour
 
             if (i == bones.Length - 1)
             {
+                // Leaf bone
                 startingBoneDirectionToNext[i] = target.position - current.position;
             }
             else
             {
                 // START TODO ###################
 
-                // bonesLength[i] = ...
-                // completeLength += ...
+                bonesLength[i] = (current.position - bones[i + 1].position).magnitude;
+                completeLength += bonesLength[i];
 
                 // END TODO ###################
 
@@ -141,9 +141,10 @@ public class FabricIK : MonoBehaviour
         }
 
         /* 
-         * We first need to differenciate between two cases:
+         * We first need to differentiate between two cases:
          * First, if the target is far away from the end-effector (target not reachable).
-         * Meaning: Distance from bones[0] to target is larger than the length of the entire chain.
+         * Meaning: Distance from bones[0] to target is larger than the length of
+         * the entire chain.
          * In that case, by default, it will remain straight pointing towards the target.
          * 
          *  Target        b3   c2   b2    c1   b1    c0   b0
@@ -151,18 +152,21 @@ public class FabricIK : MonoBehaviour
          *     
          * Hints: The distance between the bones will always remain constant! 
          * The updated root bone position (bonesPositions[0]) should not change.
-         * The other bones positions will be equal to the position of the previous bone plus the direction to the target * length of the bone.
+         * The other bones positions will be equal to the position of the previous
+         * bone plus the direction to the target * length of the bone.
          * Remember: All positions we are working with, are in world-space.
          */
 
         // START TODO ###################
 
-        // Change condition!
-        if (true)
+        if ((bonesPositions[0] - target.position).magnitude > completeLength)
         {
-            // bonesPositions[i] = ...
+            for (int i = 1; i < bones.Length; i++)
+            {
+                bonesPositions[i] = bonesPositions[i - 1]
+                    + bonesLength[i - 1] * (target.position - bonesPositions[i - 1]).normalized;
+            }
         }
-
         // END TODO ###################
 
         /*
@@ -236,7 +240,7 @@ public class FabricIK : MonoBehaviour
                     var projectedPole = plane.ClosestPointOnPlane(pole.position);
                     var projectedBone = plane.ClosestPointOnPlane(bonesPositions[i]);
                     var angle = Vector3.SignedAngle(projectedBone - bonesPositions[i - 1], projectedPole - bonesPositions[i - 1], plane.normal);
-                    bonesPositions[i] = Quaternion.AngleAxis(angle, plane.normal) * (bonesPositions[i] - bonesPositions[i - 1]) + bonesPositions[i - 1]; 
+                    bonesPositions[i] = Quaternion.AngleAxis(angle, plane.normal) * (bonesPositions[i] - bonesPositions[i - 1]) + bonesPositions[i - 1];
                 }
             }
 
@@ -274,7 +278,7 @@ public class FabricIK : MonoBehaviour
             Handles.matrix = Matrix4x4.TRS(current.position, Quaternion.FromToRotation(Vector3.up, current.parent.position - current.position), new Vector3(scale, Vector3.Distance(current.parent.position, current.position), scale));
             Handles.color = Color.blue;
             Handles.DrawWireCube(Vector3.up * 0.5f, Vector3.one);
-            
+
             current = current.parent;
         }
     }
