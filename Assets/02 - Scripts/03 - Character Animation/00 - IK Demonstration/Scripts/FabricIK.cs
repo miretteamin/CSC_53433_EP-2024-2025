@@ -190,19 +190,23 @@ public class FabricIK : MonoBehaviour
             for (int ite = 0; ite < iterations; ite++)
             {
                 // Backward pass (we skip the root bone, as we do not need to change it because in the final chain it will keep its position).
+                // Backward pass: leaf -> root
                 for (int i = bonesPositions.Length - 1; i > 0; i--)
                 {
                     /*
                      * In this pass, if the index belongs to the end-effector, we set its position to the target position.
-                     * For the other bones, we just set their positions equal to the position of the previous bone plus the distance * direction to that bone (as we did before).
+                     * For the other bones, we just set their positions equal to the position 
+                     of the previous bone plus the distance * direction to that bone (as we did before).
                      */
 
                     // START TODO ###################
 
-                    // if...
-                    //     bonesPositions[i] = ...
-                    // else...
-                    //     bonesPositions[i] = ...
+                    if (i == bonesPositions.Length - 1)
+                        // Leaf
+                        bonesPositions[i] = target.position;
+                    else
+                        bonesPositions[i] = bonesPositions[i + 1]
+                            + bonesLength[i] * (bonesPositions[i] - bonesPositions[i + 1]).normalized;
 
                     // END TODO ###################
                 }
@@ -216,7 +220,8 @@ public class FabricIK : MonoBehaviour
 
                     // START TODO ###################
 
-                    // bonesPositions[i] = ...
+                    bonesPositions[i] = bonesPositions[i - 1]
+                            + bonesLength[i - 1] * (bonesPositions[i] - bonesPositions[i - 1]).normalized;
 
                     // END TODO ###################
 
