@@ -142,6 +142,18 @@ public class GeneticAlgo : MonoBehaviour
             showMaxGeneration = true;
             showFrame = true;
         }
+        else if (task == 3)
+        {
+            //IK    
+            makeClusters = false;
+            popSize = 0;
+            drawRays = false;
+            showGrassCount = false;
+            showAnimals = false;
+            showMaxGeneration = false;
+            showMaxLifetime = false;
+            showFrame = true;
+        }
     }
 
     void Update()
