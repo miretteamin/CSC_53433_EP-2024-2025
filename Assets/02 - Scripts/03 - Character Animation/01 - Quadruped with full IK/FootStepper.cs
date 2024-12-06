@@ -114,7 +114,7 @@ public class FootStepper : MonoBehaviour
         if (Physics.Raycast(raycastOrigin, Vector3.down, out RaycastHit hitInfo, Mathf.Infinity, groundRaycastMask))
         {
             endPos = hitInfo.point;
-            Debug.Log("End Pos: " + endPos.ToString());
+            // Debug.Log("End Pos: " + endPos.ToString());
             endNormal = hitInfo.normal;
             return true;
         }
@@ -179,10 +179,10 @@ public class FootStepper : MonoBehaviour
 
             // START TODO ###################
 
-            transform.position = moveTime * startPos + (1 - moveTime) * endPos;
-            //transform.position = Vector3.Lerp(Vector3.Lerp(startPos, midPos, normalizedTime),
-            //                                  Vector3.Lerp(midPos, endPos, normalizedTime),
-            //                                  normalizedTime);
+            // transform.position = moveTime * startPos + (1 - moveTime) * endPos;
+            transform.position = Vector3.Lerp(Vector3.Lerp(startPos, midPos, normalizedTime),
+                                             Vector3.Lerp(midPos, endPos, normalizedTime),
+                                             normalizedTime);
             // END TODO ###################
 
             /*

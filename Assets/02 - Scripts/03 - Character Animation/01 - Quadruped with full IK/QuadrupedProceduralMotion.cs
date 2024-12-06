@@ -150,8 +150,11 @@ public class QuadrupedProceduralMotion : MonoBehaviour
     private void RootAdaptation()
     {
         // Origin of the ray.
+        // Debug.Log("Ground Checker: " + groundChecker.position.ToString());
         Vector3 raycastOrigin = groundChecker.position;
 
+        raycastOrigin.y = 100f;
+        
         // The ray information gives you where you hit and the normal of the terrain in that location.
         if (Physics.Raycast(raycastOrigin, -transform.up, out RaycastHit hit, Mathf.Infinity))
         {
@@ -161,6 +164,10 @@ public class QuadrupedProceduralMotion : MonoBehaviour
                 posHit = hit.point;
                 distanceHit = hit.distance;
                 normalTerrain = hit.normal;
+                Debug.DrawRay(raycastOrigin, -transform.up, Color.blue);
+                // Debug.Log("Pos Hit: " + posHit.ToString());
+                // Debug.Log("DIst Hit: " + distanceHit.ToString());
+                // Debug.Log("Normal: " + normalTerrain.ToString());
             }
         }
 
@@ -179,19 +186,26 @@ public class QuadrupedProceduralMotion : MonoBehaviour
 
         //float angle;
         //Vector3 axis;
+        Vector3 targetHipsPosition = new Vector3(hips.position.x, posHit.y + 1f, hips.position.z);
+        hips.position = targetHipsPosition;
+
+        Debug.Log("Transform up: " + transform.up.ToString());
         //hips.rotation.ToAngleAxis(out angle, out axis);
         //axis.Normalize();
 
         //hips.position = posHit + Vector3.up * 0.5f;
-        //hips.rotation = Quaternion.FromToRotation(axis, normalTerrain);
+        // if ()
+        // {   
+        //      hips.rotation = Quaternion.FromToRotation(transform.up, normalTerrain);
+        // }       
 
-        Vector3 targetHipsPosition = constantHipsPosition;
-        targetHipsPosition.y = posHit.y + distanceHit; // Adjust height based on hit info.
-        hips.position = Vector3.Lerp(hips.position, targetHipsPosition, heightAcceleration * Time.deltaTime);
+        // Vector3 targetHipsPosition = constantHipsPosition;
+        // targetHipsPosition.y = posHit.y + heightAcceleration; // Adjust height based on hit info.
+        // hips.position = Vector3.Lerp(hips.position, targetHipsPosition, heightAcceleration * Time.deltaTime);
 
-        // Adjust the hips rotation to align with the ground.
-        Quaternion targetRotation = Quaternion.FromToRotation(transform.up, normalTerrain) * hips.rotation;
-        hips.rotation = Quaternion.Slerp(hips.rotation, targetRotation, heightAcceleration * Time.deltaTime);
+        // // Adjust the hips rotation to align with the ground.
+        // Quaternion targetRotation = Quaternion.FromToRotation(transform.up, normalTerrain) * Quaternion.Euler(constantHipsRotation);
+        // hips.rotation = Quaternion.Slerp(hips.rotation, targetRotation, heightAcceleration * Time.deltaTime);
 
         // END TODO ###################
     }
@@ -255,7 +269,7 @@ public class QuadrupedProceduralMotion : MonoBehaviour
 
         // START TODO ###################
 
-        Debug.DrawRay(goal.position, headBone.position, Color.red);
+        // Debug.DrawRay(goal.position, headBone.position, Color.red);
 
 
         // goalWorldLookDir = ...
