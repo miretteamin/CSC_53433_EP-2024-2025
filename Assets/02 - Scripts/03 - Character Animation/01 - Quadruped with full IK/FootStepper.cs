@@ -167,7 +167,8 @@ public class FootStepper : MonoBehaviour
 
             // START TODO ###################
 
-            transform.position = moveTime * startPos + (1 - moveTime) * endPos;
+            // transform.position = moveTime * startPos + (1 - moveTime) * endPos;
+            transform.position = Vector3.Lerp(startPoint, endPoint, normalizedTime);
 
             // END TODO ###################
 

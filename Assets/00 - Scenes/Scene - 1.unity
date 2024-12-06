@@ -685,6 +685,7 @@ GameObject:
   - component: {fileID: 374040431}
   - component: {fileID: 374040435}
   - component: {fileID: 374040440}
+  - component: {fileID: 374040441}
   m_Layer: 0
   m_Name: Terrain
   m_TagString: Ground
@@ -830,6 +831,47 @@ MonoBehaviour:
   deathColor: {r: 0.3882353, g: 0.23529412, b: 0.27450982, a: 0}
   eatingColor: {r: 0.6392157, g: 0.79607844, b: 0.21960784, a: 0}
   procreatingColor: {r: 0.87169814, g: 0.42745098, b: 0.8683514, a: 0}
+  showCorpses: 1
+  highlightEating: 1
+  highlightProcreation: 1
+  vegetationGrowthRate: 0.01
+  currentGrowth: 0
+  scale: 0.05
+--- !u!114 &374040441
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 374040426}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e757d9c85516d7544a9260cb4cfb2aae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  popSize: 100
+  ratPrefab: {fileID: 6733265589692463594, guid: caac98201d55b094aaf607f74d970867,
+    type: 3}
+  task: 2
+  drawRays: 1
+  clearTerrain: 0
+  fillTerrain: 0
+  updateRandom: 1
+  saveStatisticsToDisk: 0
+  makeClusters: 1
+  numClusters: 20
+  clusterRadius: 50
+  decayRatio: 0.9
+  coverageRate: 0.35
+  showRats: 1
+  showGrassCount: 1
+  showFrame: 1
+  showMaxGeneration: 1
+  showMaxLifetime: 1
+  healthyColor: {r: 0.85660374, g: 0.12121739, b: 0.12121739, a: 0}
+  deathColor: {r: 0, g: 0, b: 0, a: 0}
+  eatingColor: {r: 0.1323245, g: 0.123268016, b: 0.7509433, a: 0}
+  procreatingColor: {r: 0.7934462, g: 0.83396226, b: 0.13689566, a: 0}
   showCorpses: 1
   highlightEating: 1
   highlightProcreation: 1
@@ -2136,7 +2178,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2137751596}
-  m_LocalRotation: {x: 0.09467271, y: 0.4793379, z: -0.052104156, w: 0.870952}
+  m_LocalRotation: {x: 0.09467271, y: 0.4793379, z: -0.052104153, w: 0.870952}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
