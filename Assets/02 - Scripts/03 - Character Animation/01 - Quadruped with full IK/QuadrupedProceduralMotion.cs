@@ -144,7 +144,8 @@ public class QuadrupedProceduralMotion : MonoBehaviour
     }
 
     /// <summary>
-    /// In LateUpdate, after moving the root body to the target, we perform the adaptation on a top-layer to place the animal parallel to the ground.
+    /// In LateUpdate, after moving the root body to the target, 
+    /// we perform the adaptation on a top-layer to place the animal parallel to the ground.
     /// </summary>
     private void RootAdaptation()
     {
@@ -164,16 +165,33 @@ public class QuadrupedProceduralMotion : MonoBehaviour
         }
 
         /*
-         * In this layer, we need to refine the position and rotation of the hips based on the ground. Without this part, the animal would not lift its root body when walking on high terrains.
-         * First, try to use the hit information to modify hips.position and move it up when you are in a higher ground.
-         * Then, use also this information (normalTerrain) to rotate the root body and place it parallel to the ground. You can use Quaternion.FromToRotation() for that.
-         * When you have the angle that you want to have in your root body, you can place it directly, or use some interpolation technique to go smoothly to that value, in order to have less drastical movements.
+         * In this layer, we need to refine the position and rotation of the hips based on the ground.
+          Without this part, the animal would not lift its root body when walking on high terrains.
+         * First, try to use the hit information to modify hips.position and move it up when you are in a 
+         higher ground.
+         * Then, use also this information (normalTerrain) to rotate the root body and place 
+         it parallel to the ground. You can use Quaternion.FromToRotation() for that.
+         * When you have the angle that you want to have in your root body, you can place 
+         it directly, or use some interpolation technique to go smoothly to that value, in order to have less drastical movements.
          */
 
         // START TODO ###################
 
-        // hips.position = ...
-        // hips.rotation = ...
+        //float angle;
+        //Vector3 axis;
+        //hips.rotation.ToAngleAxis(out angle, out axis);
+        //axis.Normalize();
+
+        //hips.position = posHit + Vector3.up * 0.5f;
+        //hips.rotation = Quaternion.FromToRotation(axis, normalTerrain);
+
+        Vector3 targetHipsPosition = constantHipsPosition;
+        targetHipsPosition.y = posHit.y + distanceHit; // Adjust height based on hit info.
+        hips.position = Vector3.Lerp(hips.position, targetHipsPosition, heightAcceleration * Time.deltaTime);
+
+        // Adjust the hips rotation to align with the ground.
+        Quaternion targetRotation = Quaternion.FromToRotation(transform.up, normalTerrain) * hips.rotation;
+        hips.rotation = Quaternion.Slerp(hips.rotation, targetRotation, heightAcceleration * Time.deltaTime);
 
         // END TODO ###################
     }
@@ -226,13 +244,19 @@ public class QuadrupedProceduralMotion : MonoBehaviour
         headBone.localRotation = Quaternion.identity;
 
         /* 
-         * First, we need to get goalWorldLookDir: the position of the goal with respect to the head transform (you can use Debug.DrawRay() to debug it).
-         * Use InverseTransformDirection() and headbone.parent to transform it with respect to the parent of the head (goalLocalLookDir).
+         * First, we need to get goalWorldLookDir: the position of the goal with respect to the head transform 
+         * (you can use Debug.DrawRay() to debug it).
+         * Use InverseTransformDirection() and headbone.parent to transform it with respect to the parent of the head 
+         * (goalLocalLookDir).
          * Use RotateTowards() to have Vector3.forward always looking to goalLocalLookDir.
-         * Finally, define targetLocalRotation: The target local angle for your head. The forward axis (along the bone) will need to point to the object. To do this, you can use Quaternion.LookRotation().
+         * Finally, define targetLocalRotation: The target local angle for your head. The forward axis (along the bone) 
+         * will need to point to the object. To do this, you can use Quaternion.LookRotation().
          */
 
         // START TODO ###################
+
+        Debug.DrawRay(goal.position, headBone.position, Color.red);
+
 
         // goalWorldLookDir = ...
         // goalLocalLookDir = ...

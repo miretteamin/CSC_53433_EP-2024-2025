@@ -5,7 +5,8 @@ using UnityEngine;
 public class FootStepper : MonoBehaviour
 {
     [Header("Stepper Settings")]
-    public Transform homeTransform; // The position and rotation from which we want to stay in range (represented as the blue chip).
+    public Transform homeTransform; // The position and rotation from which we want to stay in range (represented as 
+    //the blue chip).
     public float distanceThreshold = 0.4f; // If we exceed this distance threshold, we come back to the home position.
     public float angleThreshold = 135f; // If we exceed this rotation threshold, we come back to the home rotation.
     public float moveDuration; // The time it takes a step to complete.
@@ -95,22 +96,25 @@ public class FootStepper : MonoBehaviour
 
         /*
          * Now, we build a raycast system. Check: https://docs.unity3d.com/ScriptReference/Physics.Raycast.html
-         * The ray will detect a collision with the terrain and use such information to place the foot accordingly on the ground.
+         * The ray will detect a collision with the terrain and use such information to place 
+         * the foot accordingly on the ground.
          * First, you create the origin (Vector3) of your ray, which will be in the home position 
          * (remember to add the overshoot vector calculated before).
-         * You can also add some vertical y displacement to let the ray having more space when going down and avoiding undesired collisions.
-         * Then, throw the ray downwards, and save the position and normal vector of the hit in "endPos" and "endNormal" respectively.
+         * You can also add some vertical y displacement to let the ray having more space when 
+         going down and avoiding undesired collisions.
+         * Then, throw the ray downwards, and save the position and normal vector of the hit in 
+         "endPos" and "endNormal" respectively.
          * If there is a collision, return true. Otherwise, you can return false.
          */
 
         // START TODO ###################
 
-        float epislon = 1e-2f;
-        Vector3 raycastOrigin = this.homeTransform.position + overshootVector + new Vector3(0f, epislon, 0f);
-
-        if (Physics.Raycast(raycastOrigin, Vector3.down, out RaycastHit hitInfo))
+        float epsilon = 1e7f;
+        Vector3 raycastOrigin = homeTransform.position + overshootVector + Vector3.up * epsilon;
+        if (Physics.Raycast(raycastOrigin, Vector3.down, out RaycastHit hitInfo, Mathf.Infinity, groundRaycastMask))
         {
             endPos = hitInfo.point;
+            Debug.Log("End Pos: " + endPos.ToString());
             endNormal = hitInfo.normal;
             return true;
         }
@@ -144,7 +148,14 @@ public class FootStepper : MonoBehaviour
 
         // Initialize the time.
         float timeElapsed = 0;
-
+        Vector3 midPos = (0.5f) * (startPos + endPos);
+        midPos.y = (float)(Mathf.Max(startPos.y, endPos.y) + 0.01f);
+        float distance;
+        if (Physics.Raycast(midPos + Vector3.up * 1f, Vector3.down, out RaycastHit midPosHitInfo, Mathf.Infinity, groundRaycastMask))
+        {
+            midPos = midPosHitInfo.point;
+            distance = midPosHitInfo.distance;
+        }  
         do
         {
             /*
@@ -158,6 +169,7 @@ public class FootStepper : MonoBehaviour
             // We could also apply some animation curve(e.g.Easing.EaseInOutCubic) to make the foot go smoother.
             normalizedTime = Easing.EaseInOutCubic(normalizedTime);
 
+
             /*
              * We know startPos and endPos. We could interpolate directly from the starting point to the end point, but we have a problem: The movement would be straight and flat on the terrain. Try it out!
              * transform.position = Vector3.Lerp(startPoint, endPoint, normalizedTime);
@@ -167,9 +179,10 @@ public class FootStepper : MonoBehaviour
 
             // START TODO ###################
 
-            // transform.position = moveTime * startPos + (1 - moveTime) * endPos;
-            transform.position = Vector3.Lerp(startPoint, endPoint, normalizedTime);
-
+            transform.position = moveTime * startPos + (1 - moveTime) * endPos;
+            //transform.position = Vector3.Lerp(Vector3.Lerp(startPos, midPos, normalizedTime),
+            //                                  Vector3.Lerp(midPos, endPos, normalizedTime),
+            //                                  normalizedTime);
             // END TODO ###################
 
             /*
@@ -178,7 +191,7 @@ public class FootStepper : MonoBehaviour
 
             // START TODO ###################
 
-            // transform.rotation = ...
+            transform.rotation = Quaternion.Slerp(startRot, endRot, normalizedTime);
 
             // END TODO ###################
 
