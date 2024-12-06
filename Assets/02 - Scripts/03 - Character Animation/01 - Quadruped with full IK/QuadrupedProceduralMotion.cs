@@ -154,7 +154,7 @@ public class QuadrupedProceduralMotion : MonoBehaviour
         Vector3 raycastOrigin = groundChecker.position;
 
         raycastOrigin.y = 100f;
-        
+
         // The ray information gives you where you hit and the normal of the terrain in that location.
         if (Physics.Raycast(raycastOrigin, -transform.up, out RaycastHit hit, Mathf.Infinity))
         {
@@ -184,29 +184,39 @@ public class QuadrupedProceduralMotion : MonoBehaviour
 
         // START TODO ###################
 
-        //float angle;
-        //Vector3 axis;
+        // FIRST FN
+
+
         Vector3 targetHipsPosition = new Vector3(hips.position.x, posHit.y + 1f, hips.position.z);
         hips.position = targetHipsPosition;
+        //Debug.Log("Transform up: " + transform.up.ToString());
 
-        Debug.Log("Transform up: " + transform.up.ToString());
+
+
+
+        // hips.rotation = Quaternion.FromToRotation(transform.up, normalTerrain);
+
+        //float angle;
+        //Vector3 axis;
         //hips.rotation.ToAngleAxis(out angle, out axis);
         //axis.Normalize();
 
         //hips.position = posHit + Vector3.up * 0.5f;
-        // if ()
-        // {   
-        //      hips.rotation = Quaternion.FromToRotation(transform.up, normalTerrain);
-        // }       
 
         // Vector3 targetHipsPosition = constantHipsPosition;
         // targetHipsPosition.y = posHit.y + heightAcceleration; // Adjust height based on hit info.
         // hips.position = Vector3.Lerp(hips.position, targetHipsPosition, heightAcceleration * Time.deltaTime);
 
         // // Adjust the hips rotation to align with the ground.
-        // Quaternion targetRotation = Quaternion.FromToRotation(transform.up, normalTerrain) * Quaternion.Euler(constantHipsRotation);
-        // hips.rotation = Quaternion.Slerp(hips.rotation, targetRotation, heightAcceleration * Time.deltaTime);
+        Quaternion targetRotation = Quaternion.FromToRotation(transform.up, normalTerrain) * Quaternion.Euler(constantHipsRotation);
+        hips.rotation = Quaternion.Slerp(hips.rotation, targetRotation, heightAcceleration * Time.deltaTime);
 
+        // Vector3 goalWorldLookDirHips = (goal.position - hips.position).normalized;
+        // Vector3 goalLocalLookDirHips = hips.parent.InverseTransformDirection(goalWorldLookDirHips);
+        // Quaternion targetLocalRotation = Quaternion.LookRotation(goalLocalLookDirHips);
+        // Quaternion currentLocalRotation = hips.localRotation;
+        // hips.localRotation = Quaternion.RotateTowards(currentLocalRotation, targetLocalRotation,
+        //  Time.deltaTime);
         // END TODO ###################
     }
 
@@ -260,7 +270,8 @@ public class QuadrupedProceduralMotion : MonoBehaviour
         /* 
          * First, we need to get goalWorldLookDir: the position of the goal with respect to the head transform 
          * (you can use Debug.DrawRay() to debug it).
-         * Use InverseTransformDirection() and headbone.parent to transform it with respect to the parent of the head 
+         * Use InverseTransformDirection() and headbone.parent to transform it with respect to the 
+         parent of the head 
          * (goalLocalLookDir).
          * Use RotateTowards() to have Vector3.forward always looking to goalLocalLookDir.
          * Finally, define targetLocalRotation: The target local angle for your head. The forward axis (along the bone) 
@@ -269,13 +280,16 @@ public class QuadrupedProceduralMotion : MonoBehaviour
 
         // START TODO ###################
 
-        // Debug.DrawRay(goal.position, headBone.position, Color.red);
+        // SECOND FN
 
+        Debug.DrawRay(headBone.position, goal.position - headBone.position, Color.red);
+        goalWorldLookDir = (goal.position - headBone.position).normalized;
+        goalLocalLookDir = headBone.parent.InverseTransformDirection(goalWorldLookDir);
+        Quaternion targetLocalRotation = Quaternion.LookRotation(goalLocalLookDir);
+        headBone.localRotation = Quaternion.RotateTowards(currentLocalRotation, targetLocalRotation,
+         Time.deltaTime);
 
-        // goalWorldLookDir = ...
-        // goalLocalLookDir = ...
-
-        Quaternion targetLocalRotation = Quaternion.identity; // Change!
+        //Quaternion targetLocalRotation = Quaternion.identity; // Change!
 
         // END TODO ###################
 
