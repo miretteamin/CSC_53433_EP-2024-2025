@@ -76,6 +76,12 @@ public class QuadrupedProceduralMotion : MonoBehaviour
         TrackHead();
         TailUpdate();
         RootAdaptation();
+        //Debug.DrawRay(headBone.position, headBone.up * 2f, Color.green);
+        //Debug.DrawRay(headBone.position, headBone.right * 2f, Color.green);
+        //Debug.DrawRay(headBone.position, headBone.forward * 2f, Color.green);
+        //Debug.DrawRay(hips.position, hips.up * 3f, Color.blue);
+        //Debug.DrawRay(hips.position, hips.right * 3f, Color.blue);
+        //Debug.DrawRay(hips.position, hips.forward * 5f, Color.blue);
     }
 
     #region Root Motion
@@ -164,7 +170,7 @@ public class QuadrupedProceduralMotion : MonoBehaviour
                 posHit = hit.point;
                 distanceHit = hit.distance;
                 normalTerrain = hit.normal;
-                Debug.DrawRay(raycastOrigin, -transform.up, Color.blue);
+                //Debug.DrawRay(raycastOrigin, -transform.up, Color.blue);
                 // Debug.Log("Pos Hit: " + posHit.ToString());
                 // Debug.Log("DIst Hit: " + distanceHit.ToString());
                 // Debug.Log("Normal: " + normalTerrain.ToString());
@@ -191,9 +197,6 @@ public class QuadrupedProceduralMotion : MonoBehaviour
         hips.position = targetHipsPosition;
         //Debug.Log("Transform up: " + transform.up.ToString());
 
-
-
-
         // hips.rotation = Quaternion.FromToRotation(transform.up, normalTerrain);
 
         //float angle;
@@ -208,15 +211,28 @@ public class QuadrupedProceduralMotion : MonoBehaviour
         // hips.position = Vector3.Lerp(hips.position, targetHipsPosition, heightAcceleration * Time.deltaTime);
 
         // // Adjust the hips rotation to align with the ground.
-        Quaternion targetRotation = Quaternion.FromToRotation(transform.up, normalTerrain) * Quaternion.Euler(constantHipsRotation);
-        hips.rotation = Quaternion.Slerp(hips.rotation, targetRotation, heightAcceleration * Time.deltaTime);
+        //Quaternion targetRotation = Quaternion.FromToRotation(transform.up, normalTerrain) * Quaternion.Euler(constantHipsRotation);
+        Vector3 forward = headBone.forward.normalized;
+        Vector3 up = normalTerrain.normalized;
+        Vector3 right = Vector3.Cross(up, forward).normalized;
+        forward = Vector3.Cross(right, up);
+        //Debug.DrawRay(this.transform.position, right * 3f, Color.red);
+        // Recompute the up vector to ensure orthogonality
+        up = Vector3.Cross(forward, right).normalized;
+        //Debug.DrawRay(this.transform.position, up * 3f, Color.yellow);
+        //Debug.DrawRay(this.transform.position, normalTerrain * 3f, Color.cyan);
 
-        // Vector3 goalWorldLookDirHips = (goal.position - hips.position).normalized;
-        // Vector3 goalLocalLookDirHips = hips.parent.InverseTransformDirection(goalWorldLookDirHips);
-        // Quaternion targetLocalRotation = Quaternion.LookRotation(goalLocalLookDirHips);
-        // Quaternion currentLocalRotation = hips.localRotation;
-        // hips.localRotation = Quaternion.RotateTowards(currentLocalRotation, targetLocalRotation,
-        //  Time.deltaTime);
+        // Create a rotation matrix from the basis vectors
+        Matrix4x4 rotationMatrix = new Matrix4x4();
+        rotationMatrix.SetColumn(0, right);    // X-axis
+        rotationMatrix.SetColumn(1, up);      // Y-axis
+        rotationMatrix.SetColumn(2, forward); // Z-axis
+        rotationMatrix.SetColumn(3, new Vector4(0, 0, 0, 1)); // Homogeneous coordinates
+        // Convert the rotation matrix to a quaternion
+        Quaternion targetRotation = Quaternion.LookRotation(forward, up);
+        hips.rotation = Quaternion.Slerp(hips.rotation, targetRotation, 1 - Mathf.Exp(-speedHead * Time.deltaTime));
+        //hips.rotation = Quaternion.Slerp(hips.rotation, targetRotation, heightAcceleration * Time.deltaTime);
+
         // END TODO ###################
     }
 
@@ -286,10 +302,6 @@ public class QuadrupedProceduralMotion : MonoBehaviour
         goalWorldLookDir = (goal.position - headBone.position).normalized;
         goalLocalLookDir = headBone.parent.InverseTransformDirection(goalWorldLookDir);
         Quaternion targetLocalRotation = Quaternion.LookRotation(goalLocalLookDir);
-        headBone.localRotation = Quaternion.RotateTowards(currentLocalRotation, targetLocalRotation,
-         Time.deltaTime);
-
-        //Quaternion targetLocalRotation = Quaternion.identity; // Change!
 
         // END TODO ###################
 
