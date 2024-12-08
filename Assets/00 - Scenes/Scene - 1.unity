@@ -684,6 +684,7 @@ GameObject:
   - component: {fileID: 374040430}
   - component: {fileID: 374040431}
   - component: {fileID: 374040435}
+  - component: {fileID: 374040442}
   - component: {fileID: 374040440}
   - component: {fileID: 374040441}
   m_Layer: 0
@@ -878,6 +879,18 @@ MonoBehaviour:
   vegetationGrowthRate: 0.01
   currentGrowth: 0
   scale: 0.05
+--- !u!114 &374040442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 374040426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4eb5106b013d15f49823209365b48902, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &479491913
 GameObject:
   m_ObjectHideFlags: 0
@@ -2276,7 +2289,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2137751596}
-  m_LocalRotation: {x: 0.09467273, y: 0.4793379, z: -0.05210416, w: 0.870952}
+  m_LocalRotation: {x: 0.09467271, y: 0.4793379, z: -0.052104156, w: 0.870952}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
