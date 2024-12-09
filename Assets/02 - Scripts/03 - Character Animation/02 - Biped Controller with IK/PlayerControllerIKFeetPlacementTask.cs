@@ -101,7 +101,8 @@ public class PlayerControllerIKFeetPlacementTask : MonoBehaviour
          */
 
         // START TODO ###################
-
+        anim.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 1f);
+        anim.SetIKPositionWeight(AvatarIKGoal.RightFoot, 1f);
 
         // END TODO ###################
 
@@ -120,6 +121,12 @@ public class PlayerControllerIKFeetPlacementTask : MonoBehaviour
         {
             // START TODO ###################
 
+            float leftFootWeight = anim.GetFloat(leftFootAnimVariableName);
+            float rightFootWeight = anim.GetFloat(rightFootAnimVariableName);
+
+            anim.SetIKRotationWeight(AvatarIKGoal.LeftFoot, leftFootWeight);
+            anim.SetIKRotationWeight(AvatarIKGoal.RightFoot, rightFootWeight);
+
 
             // END TODO ###################
         }
@@ -135,7 +142,8 @@ public class PlayerControllerIKFeetPlacementTask : MonoBehaviour
          */
 
         // START TODO ###################
-
+        MoveFeetToIKPoint(AvatarIKGoal.LeftFoot, leftFootIKPosition, leftFootIKRotation, ref lastLeftFootPositionY);
+        MoveFeetToIKPoint(AvatarIKGoal.RightFoot, rightFootIKPosition, rightFootIKRotation, ref lastRightFootPositionY);
 
         // END TODO ###################
 
@@ -155,7 +163,9 @@ public class PlayerControllerIKFeetPlacementTask : MonoBehaviour
 
         // START TODO ###################
 
-        Vector3 targetIKPosition = Vector3.zero;
+        // Vector3 targetIKPosition = Vector3.zero;
+
+        Vector3 targetIKPosition = anim.GetIKPosition(foot);
 
         // END TODO ###################
 
@@ -164,8 +174,8 @@ public class PlayerControllerIKFeetPlacementTask : MonoBehaviour
         if (positionIKHolder != Vector3.zero)
         {
             // Convert the world coordinates for current/target foot positions to local coordinates with respect to the character.
-            targetIKPosition = transform.InverseTransformPoint(targetIKPosition);
-            positionIKHolder = transform.InverseTransformPoint(positionIKHolder);
+            // targetIKPosition = transform.InverseTransformPoint(targetIKPosition);
+            // positionIKHolder = transform.InverseTransformPoint(positionIKHolder);
 
 
             /* 
@@ -177,7 +187,8 @@ public class PlayerControllerIKFeetPlacementTask : MonoBehaviour
 
             // START TODO ###################
 
-            float yVariable = 0;
+            // float yVariable = 0;
+            float yVariable = Mathf.Lerp(lastFootPositionY, positionIKHolder.y - targetIKPosition.y, feetToIKPositionSpeed);
 
             // END TODO ###################
 
