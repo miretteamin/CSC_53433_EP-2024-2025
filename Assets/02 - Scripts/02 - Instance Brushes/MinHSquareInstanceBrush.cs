@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MinHSquareInstanceBrush : InstanceBrush {
+public class MinHSquareInstanceBrush : InstanceBrushMultiObj {
 
     public override void draw(float x, float z) {
         int total_count = terrain.getObjectCount();
@@ -25,7 +25,7 @@ public class MinHSquareInstanceBrush : InstanceBrush {
             }
 
         }
-        
+       
         spawnObject(random_x, random_z);
     }
 }

@@ -26,6 +26,7 @@ public abstract class InstanceBrush : Brush {
         if (prefab_idx == -1) {
             return;
         }
+        Debug.Log(prefab_idx);
         float scale_diff = Mathf.Abs(terrain.max_scale - terrain.min_scale);
         float scale_min = Mathf.Min(terrain.max_scale, terrain.min_scale);
         float scale = (float)CustomTerrain.rnd.NextDouble() * scale_diff + scale_min;
