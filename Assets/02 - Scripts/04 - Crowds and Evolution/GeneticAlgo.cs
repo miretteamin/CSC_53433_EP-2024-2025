@@ -91,7 +91,6 @@ public class GeneticAlgo : MonoBehaviour
 
     public bool dumpWaste;
     private bool isToxic;
-    public string targetTag = "Water"; // Set the tag in the Inspector
     public GameObject water;
     // public Water water;
     void Start()
