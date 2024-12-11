@@ -101,8 +101,8 @@ public class PlayerControllerIKFeetPlacementTask : MonoBehaviour
          */
 
         // START TODO ###################
-        anim.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 1f);
-        anim.SetIKPositionWeight(AvatarIKGoal.RightFoot, 1f);
+        anim.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 0.01f);
+        anim.SetIKPositionWeight(AvatarIKGoal.RightFoot, 0.01f);
 
         // END TODO ###################
 
