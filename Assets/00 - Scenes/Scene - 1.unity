@@ -906,7 +906,9 @@ MonoBehaviour:
   numClusters: 8
   clusterRadius: 50
   decayRatio: 0.99
-  coverageRate: 1
+  rockCoverageRate: 0.005
+  grassCoverageRate: 0.6
+  snowCoverageRate: 0
   showAnimals: 1
   showGrassCount: 1
   showFrame: 1
@@ -922,6 +924,9 @@ MonoBehaviour:
   vegetationGrowthRate: 0.01
   currentGrowth: 0
   scale: 0.05
+  dumpWaste: 0
+  targetTag: Water
+  water: {fileID: 0}
 --- !u!114 &374040441
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1323,6 +1328,7 @@ GameObject:
   - component: {fileID: 479491915}
   - component: {fileID: 479491914}
   - component: {fileID: 479491918}
+  - component: {fileID: 479491919}
   m_Layer: 0
   m_Name: Water
   m_TagString: Untagged
@@ -1417,11 +1423,24 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 479491913}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 10, y: 11, z: 11}
   m_Center: {x: 0, y: 3, z: 0}
+--- !u!114 &479491919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 479491913}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bce1539658d565640a865dfc96b156a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  toxicMaterial: {fileID: 2100000, guid: 85132d609838f2e4eb99ec06080b1f0f, type: 2}
 --- !u!1 &534669902
 GameObject:
   m_ObjectHideFlags: 0
@@ -1591,7 +1610,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 609556146}
-  m_LocalRotation: {x: 0.08129501, y: -0.42652696, z: 0.038527682, w: 0.8999897}
+  m_LocalRotation: {x: 0.08129501, y: -0.42652693, z: 0.03852768, w: 0.8999897}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2199,7 +2218,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1090240002}
-  m_LocalRotation: {x: 0.08129501, y: -0.426527, z: 0.038527686, w: 0.8999897}
+  m_LocalRotation: {x: 0.08129502, y: -0.42652696, z: 0.038527675, w: 0.8999897}
   m_LocalPosition: {x: 139.11002, y: 48.26, z: 232.83409}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
