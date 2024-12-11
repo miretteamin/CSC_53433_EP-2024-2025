@@ -62,6 +62,7 @@ public class Animal : MonoBehaviour
 
     void Start()
     {
+
         lifetime = 0;
 
         // Network: 1 input per receptor, 1 output per actuator.
@@ -82,9 +83,17 @@ public class Animal : MonoBehaviour
         eatingFrameCounter = -1;
 
     }
-
+    public void kill()
+    {
+        death = true;
+        genetic_algo.removeAnimal(this);
+    }
     void Update()
     {
+        // tfm.position.x = 105f;
+        // tfm.position.y = 133.17f;
+        // tfm.position.z = 310f;
+        tfm.position.Set(105f, 133.17f, 310f);
         lifetime++;
         if (lifetime > genetic_algo.getMaxLifetime())
             genetic_algo.setMaLifetime(lifetime);

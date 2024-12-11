@@ -33,7 +33,9 @@ public class GeneticAlgo : MonoBehaviour
     [Range(0, 1)]
     public float decayRatio = 0.90f;
     [Range(0, 1)]
-    public float coverageRate = 0.35f;
+    public float rockCoverageRate = 0.005f;
+    public float grassCoverageRate = 0.6f;
+    public float snowCoverageRate = 0.0f;
     private float currentClusters;
     private float _numClusters;
 
@@ -46,7 +48,7 @@ public class GeneticAlgo : MonoBehaviour
     private int maxGeneration;
     private int maxLifetime;
 
-    [Header("Colors")]
+    [Header("Animal Colors")]
     public Color healthyColor;
     public Color deathColor;
     public Color eatingColor;
@@ -58,6 +60,8 @@ public class GeneticAlgo : MonoBehaviour
     [Header("Dynamic elements")]
     public float vegetationGrowthRate = 0.01f;
     public float currentGrowth;
+
+    float[,,] alphamaps;
 
     public float scale = 0.05f;
 
@@ -79,11 +83,20 @@ public class GeneticAlgo : MonoBehaviour
     private List<int> maxGenerationStats;
     private List<int> maxLifetimeStats;
 
-    private List<float> tst;
-    // private List<int> lifetimeStats;
+    const int SNOW = 1;
+    const int GRASS = 2;
+    const int ROCK = 3;
 
+    [Header("Factory")]
+
+    public bool dumpWaste;
+    private bool isToxic;
+    public string targetTag = "Water"; // Set the tag in the Inspector
+    public GameObject water;
+    // public Water water;
     void Start()
     {
+
         // Retrieve terrain.
         terrain = Terrain.activeTerrain;
         customTerrain = GetComponent<CustomTerrain>();
@@ -99,8 +112,8 @@ public class GeneticAlgo : MonoBehaviour
         grassStats = new List<int>();
         maxGenerationStats = new List<int>();
         maxLifetimeStats = new List<int>();
-        tst = new List<float>();
-
+        dumpWaste = false;
+        isToxic = false;
 
         // Clear Terrain
         clearTerrainFn();
@@ -115,6 +128,7 @@ public class GeneticAlgo : MonoBehaviour
         maxLifetime = 0;
         saveStatisticsToDisk = false;
 
+        alphamaps = customTerrain.getTextures();
 
         if (task == 1)
         {
@@ -177,10 +191,24 @@ public class GeneticAlgo : MonoBehaviour
             saveToDisk();
         }
 
+        if (dumpWaste)
+        {
+            isToxic = true;
+            dumpWasteFn();
+        }
+
         // Decay num clusters over time
-        if (makeClusters)
-            _numClusters *= decayRatio;
+        // if (makeClusters)
+        //     _numClusters *= decayRatio;
     }
+
+    private void dumpWasteFn()
+    {
+        WaterMaterial waterMat = water.GetComponent<WaterMaterial>();
+        waterMat.toxify();
+
+    }
+    public bool getToxicity() { return isToxic; }
     private void updateStats()
     {
 
@@ -188,7 +216,6 @@ public class GeneticAlgo : MonoBehaviour
         grassStats.Add(grassCount);
         maxGenerationStats.Add(maxGeneration);
         maxLifetimeStats.Add(maxLifetime);
-        tst.Add(_numClusters);
 
     }
 
@@ -209,7 +236,6 @@ public class GeneticAlgo : MonoBehaviour
         SaveArrayToCSV(grassStats, grassFilePath);
         SaveArrayToCSV(maxGenerationStats, maxGenerationFilePath);
         SaveArrayToCSV(maxLifetimeStats, maxLifetimeFilePath);
-        SaveArrayToCSV(tst, tstFilePath);
 
         Debug.Log("Saved Statistics to Disk");
         saveStatisticsToDisk = false;
@@ -276,7 +302,7 @@ public class GeneticAlgo : MonoBehaviour
             updateResourcesRandom();
         }
     }
-    public void createCluster(int x, int y)
+    public void createCluster(int x, int y, int texture)
     {
         Vector2 detail_sz = customTerrain.detailSize();
         int[,] details = customTerrain.getDetails();
@@ -284,6 +310,27 @@ public class GeneticAlgo : MonoBehaviour
         int endX = (int)Math.Min(detail_sz.x, (float)x + 2 * clusterRadius);
         int startY = (int)Math.Max(0, (float)y - 2 * clusterRadius);
         int endY = (int)Math.Min(detail_sz.y, (float)y + 2 * clusterRadius);
+
+        float coverageRate = 0.0f;
+        if (texture == ROCK)
+        {
+            coverageRate = rockCoverageRate;
+        }
+        else if (texture == GRASS)
+        {
+            coverageRate = grassCoverageRate;
+        }
+        else if (texture == SNOW)
+        {
+            coverageRate = snowCoverageRate;
+        }
+        else
+        {
+            coverageRate = 0.0f;
+        }
+        // Debug.Log("(" + x.ToString() + ", " + y.ToString() + ")");
+        // Debug.Log("Texture: " + texture.ToString());
+        coverageRate = 0.35f;
 
         for (int i = startX; i < endX; i++)
         {
@@ -312,14 +359,36 @@ public class GeneticAlgo : MonoBehaviour
             int x = (int)(UnityEngine.Random.value * detail_sz.x);
             int y = (int)(UnityEngine.Random.value * detail_sz.y);
 
-            createCluster(x, y);
+            float[] texture = new float[6];
+            for (int i = 0; i < alphamaps.GetLength(2); i++)
+            {
+                texture[i] = alphamaps[(int)(x / 2), (int)(y / 2), i];
+            }
+            int argMaxTexture = argmax(texture);
+            createCluster(x, y, argMaxTexture);
         }
         customTerrain.saveDetails();
     }
+    private int argmax(float[] array)
+    {
+        int maxIndex = 0;
+        float maxValue = array[0];
+
+        for (int i = 1; i < array.Length; i++)
+        {
+            if (array[i] > maxValue)
+            {
+                maxValue = array[i];
+                maxIndex = i;
+            }
+        }
+
+        return maxIndex;
+    }
     public void makeClustersFn()
     {
-        Debug.Log("Num clusters: " + _numClusters.ToString());
-        Debug.Log("CurrGrass: " + ((float)grassCount / 1257f).ToString());
+        // Debug.Log("Num clusters: " + _numClusters.ToString());
+        // Debug.Log("CurrGrass: " + ((float)grassCount / 1257f).ToString());
         while (_numClusters > ((float)grassCount / 1257f))
         {
             makeClustersFn(1);
