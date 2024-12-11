@@ -5,7 +5,7 @@ using UnityEngine;
 public abstract class InstanceBrushMultiObj : Brush {
 
     private int prefab_idx;
-    private int[] prefab_idxs = {0, 5, 6, 7, 8, 9};
+    private int[] prefab_idxs = {0, 2, 3, 4};
 
     public override void callDraw(float x, float z) {
         if (terrain.object_prefab)
@@ -27,7 +27,7 @@ public abstract class InstanceBrushMultiObj : Brush {
         if (prefab_idx == -1) {
             return;
         }
-        prefab_idx = prefab_idxs[Random.Range(0, 6)];
+        prefab_idx = prefab_idxs[Random.Range(0, 4)];
         Debug.Log(prefab_idx);
         float scale_diff = Mathf.Abs(terrain.max_scale - terrain.min_scale);
         float scale_min = Mathf.Min(terrain.max_scale, terrain.min_scale);
