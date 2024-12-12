@@ -893,7 +893,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58addec6626ef40dfb932e8efbbb6236, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popSize: 164
+  popSize: 428
   animalPrefab: {fileID: 6733265589692463594, guid: b8a4860b06bc8b44fa2e523916edd3dd,
     type: 3}
   task: 2
@@ -903,7 +903,7 @@ MonoBehaviour:
   updateRandom: 0
   saveStatisticsToDisk: 0
   makeClusters: 1
-  numClusters: 8
+  numClusters: 4
   clusterRadius: 50
   decayRatio: 0.99
   rockCoverageRate: 0.005
@@ -925,7 +925,6 @@ MonoBehaviour:
   currentGrowth: 0
   scale: 0.05
   dumpWaste: 0
-  targetTag: Water
   water: {fileID: 479491913}
 --- !u!114 &374040441
 MonoBehaviour:

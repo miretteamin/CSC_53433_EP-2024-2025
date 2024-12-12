@@ -59,6 +59,7 @@ public class Animal : MonoBehaviour
 
     // Renderer.
     private Material mat = null;
+    public GameObject water;
 
     void Start()
     {
@@ -66,8 +67,8 @@ public class Animal : MonoBehaviour
         lifetime = 0;
 
         // Network: 1 input per receptor, 1 output per actuator.
-        vision = new float[nEyes];
-        networkStruct = new int[] { nEyes, 5, 1 };
+        vision = new float[nEyes + 1];
+        networkStruct = new int[] { nEyes + 1, 5, 1 };
         energy = maxEnergy;
         tfm = transform;
         tfm.localScale = new Vector3(animalScale, animalScale, animalScale);
@@ -189,7 +190,7 @@ public class Animal : MonoBehaviour
 
         // 3. Act using actuators.
         float angle = (output[0] * 2.0f - 1.0f) * maxAngle;
-        tfm.Rotate(0.0f, 0f, 0.0f);
+        tfm.Rotate(0.0f, angle, 0.0f);
     }
 
     /// <summary>
@@ -238,6 +239,10 @@ public class Animal : MonoBehaviour
                 }
             }
         }
+        // Vector3 waterPos = water.transform.position;
+        // Debug.Log("waterpos: " + waterPos.ToString());
+
+
     }
 
     private void UpdateColor()
